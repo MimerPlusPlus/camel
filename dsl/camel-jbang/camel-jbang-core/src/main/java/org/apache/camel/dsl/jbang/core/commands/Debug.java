@@ -74,7 +74,12 @@ import picocli.CommandLine.Command;
 import static org.apache.camel.dsl.jbang.core.common.CommandLineHelper.CAMEL_JBANG_WORK_DIR;
 import static org.apache.camel.util.IOHelper.buffered;
 
-@Command(name = "debug", description = "Debug local Camel integration", sortOptions = false, showDefaultValues = true)
+@Command(name = "debug", description = "Debug local Camel integration", sortOptions = false, showDefaultValues = true,
+         footer = {
+                 "%nExamples:",
+                 "  camel debug hello.java",
+                 "  camel debug hello.yaml --breakpoint=myBreakpoint",
+                 "  camel debug hello.java --stop-on-exit=false" })
 public class Debug extends Run {
 
     @CommandLine.Option(names = { "--remote-attach" },
@@ -175,7 +180,7 @@ public class Debug extends Run {
 
         tableHelper = new MessageTableHelper();
         tableHelper.setPretty(pretty);
-        tableHelper.setLoggingColor(loggingColor);
+        tableHelper.setLoggingColor(loggingOptions.loggingColor);
         tableHelper.setShowExchangeProperties(showExchangeProperties);
         tableHelper.setShowExchangeVariables(showExchangeVariables);
 
@@ -421,7 +426,8 @@ public class Debug extends Run {
                                 ? "-Dcamel.debug.breakpoints=_all_routes_" : "-Dcamel.debug.breakpoints=" + breakpoint),
                         "-Dcamel.debug.loggingLevel=DEBUG",
                         "-Dcamel.debug.singleStepIncludeStartEnd=true",
-                        loggingColor ? "-Dspring.output.ansi.enabled=ALWAYS" : "-Dspring.output.ansi.enabled=NEVER",
+                        loggingOptions.loggingColor
+                                ? "-Dspring.output.ansi.enabled=ALWAYS" : "-Dspring.output.ansi.enabled=NEVER",
                         "-jar", "target/camel-jbang-debug.jar");
 
                 p = pb.start();
@@ -847,7 +853,7 @@ public class Debug extends Run {
                 } else {
                     msg = "    Breakpoint suspended. Press ENTER to continue (q = quit).";
                 }
-                if (loggingColor) {
+                if (loggingOptions.loggingColor) {
                     AnsiConsole.out().println(Ansi.ansi().a(Ansi.Attribute.INTENSITY_BOLD).a(msg).reset());
                 } else {
                     printer().println(msg);
@@ -888,7 +894,7 @@ public class Debug extends Run {
                     msg = msg.substring(0, 80);
                 }
                 int length = msg.length();
-                if (loggingColor && code.match) {
+                if (loggingOptions.loggingColor && code.match) {
                     Ansi.Color col = Ansi.Color.BLUE;
                     Ansi.Attribute it = Ansi.Attribute.INTENSITY_BOLD;
                     if (row.failed && row.last) {
@@ -949,7 +955,7 @@ public class Debug extends Run {
                     }
 
                     ids = String.format("%-30.30s", ids);
-                    if (loggingColor) {
+                    if (loggingOptions.loggingColor) {
                         ids = Ansi.ansi().fgCyan().a(ids).reset().toString();
                     }
                     long e = i == 2 ? 0 : h.elapsed; // the pseudo from should have 0 as elapsed
@@ -978,7 +984,7 @@ public class Debug extends Run {
                         msg = String.format("%2d %10.10s %s %4d:   %s", h.index, elapsed, fids, h.line, c);
                     }
                     int len = msg.length();
-                    if (loggingColor) {
+                    if (loggingOptions.loggingColor) {
                         fids = String.format("%-30.30s", ids);
                         fids = Ansi.ansi().fgCyan().a(fids).reset().toString();
                         if (top && !row.last) {
@@ -1016,7 +1022,7 @@ public class Debug extends Run {
                 SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
                 ts = sdf.format(new Date(row.timestamp));
             }
-            if (loggingColor) {
+            if (loggingOptions.loggingColor) {
                 AnsiConsole.out().print(Ansi.ansi().fgBrightDefault().a(Ansi.Attribute.INTENSITY_FAINT).a(ts).reset());
             } else {
                 printer().print(ts);
@@ -1025,7 +1031,7 @@ public class Debug extends Run {
         }
         // pid
         String p = String.format("%5.5s", row.pid);
-        if (loggingColor) {
+        if (loggingOptions.loggingColor) {
             AnsiConsole.out().print(Ansi.ansi().fgMagenta().a(p).reset());
             AnsiConsole.out().print(Ansi.ansi().fgBrightDefault().a(Ansi.Attribute.INTENSITY_FAINT).a(" --- ").reset());
         } else {
@@ -1038,7 +1044,7 @@ public class Debug extends Run {
             tn = tn.substring(tn.length() - 25);
         }
         tn = String.format("[%25.25s]", tn);
-        if (loggingColor) {
+        if (loggingOptions.loggingColor) {
             AnsiConsole.out().print(Ansi.ansi().fgBrightDefault().a(Ansi.Attribute.INTENSITY_FAINT).a(tn).reset());
         } else {
             printer().print(tn);
@@ -1055,7 +1061,7 @@ public class Debug extends Run {
             ids = ids.substring(ids.length() - 40);
         }
         ids = String.format("%40.40s", ids);
-        if (loggingColor) {
+        if (loggingOptions.loggingColor) {
             AnsiConsole.out().print(Ansi.ansi().fgCyan().a(ids).reset());
         } else {
             printer().print(ids);
@@ -1063,7 +1069,7 @@ public class Debug extends Run {
         printer().print(" : ");
         // uuid
         String u = String.format("%5.5s", row.uid);
-        if (loggingColor) {
+        if (loggingOptions.loggingColor) {
             AnsiConsole.out().print(Ansi.ansi().fgMagenta().a(u).reset());
         } else {
             printer().print(u);
@@ -1074,7 +1080,7 @@ public class Debug extends Run {
         // elapsed
         String e = getElapsed(row);
         if (e != null) {
-            if (loggingColor) {
+            if (loggingOptions.loggingColor) {
                 AnsiConsole.out().print(Ansi.ansi().fgBrightDefault().a(" (" + e + ")").reset());
             } else {
                 printer().print("(" + e + ")");
@@ -1135,35 +1141,35 @@ public class Debug extends Run {
 
         if (r.first) {
             String s = "Created";
-            if (loggingColor) {
+            if (loggingOptions.loggingColor) {
                 return Ansi.ansi().fg(Ansi.Color.GREEN).a(s).reset().toString();
             } else {
                 return s;
             }
         } else if (r.last) {
             String done = r.exception != null ? "Completed (exception)" : "Completed (success)";
-            if (loggingColor) {
+            if (loggingOptions.loggingColor) {
                 return Ansi.ansi().fg(r.failed ? Ansi.Color.RED : Ansi.Color.GREEN).a(done).reset().toString();
             } else {
                 return done;
             }
         }
         if (!r.done) {
-            if (loggingColor) {
+            if (loggingOptions.loggingColor) {
                 return Ansi.ansi().fg(Ansi.Color.BLUE).a("Breakpoint").reset().toString();
             } else {
                 return "Breakpoint";
             }
         } else if (r.failed) {
             String fail = r.exception != null ? "Exception" : "Failed";
-            if (loggingColor) {
+            if (loggingOptions.loggingColor) {
                 return Ansi.ansi().fg(Ansi.Color.RED).a(fail).reset().toString();
             } else {
                 return fail;
             }
         } else {
             String s = remote ? "Sent" : "Processed";
-            if (loggingColor) {
+            if (loggingOptions.loggingColor) {
                 return Ansi.ansi().fg(Ansi.Color.GREEN).a(s).reset().toString();
             } else {
                 return s;

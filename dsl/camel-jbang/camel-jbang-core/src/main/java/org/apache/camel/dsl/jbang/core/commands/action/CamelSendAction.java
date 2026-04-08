@@ -51,7 +51,11 @@ import picocli.CommandLine;
 
 @CommandLine.Command(name = "send",
                      description = "Send messages to endpoints", sortOptions = false,
-                     showDefaultValues = true)
+                     showDefaultValues = true,
+                     footer = {
+                             "%nExamples:",
+                             "  camel cmd send --endpoint=kafka:myTopic --body='Hello World'",
+                             "  camel cmd send hello --endpoint=direct:foo --body='Hello'" })
 public class CamelSendAction extends ActionBaseCommand {
 
     @CommandLine.Parameters(description = "To use an existing running Camel integration for sending the message (name or pid)",
@@ -143,8 +147,8 @@ public class CamelSendAction extends ActionBaseCommand {
         if (headers != null) {
             for (String h : headers) {
                 if (!h.contains("=")) {
-                    printer().println("Header must be in key=value format, was: " + h);
-                    return 0;
+                    printer().printErr("Header must be in key=value format, was: " + h);
+                    return 1;
                 }
             }
         }
@@ -211,7 +215,7 @@ public class CamelSendAction extends ActionBaseCommand {
         if (pids.size() != 1) {
             printer().println("Name or pid " + name + " matches " + pids.size()
                               + " running Camel integrations. Specify a name or PID that matches exactly one.");
-            return 0;
+            return 1;
         }
 
         this.pid = pids.get(0);
@@ -423,7 +427,7 @@ public class CamelSendAction extends ActionBaseCommand {
         JsonObject connectionDetails = readConnectionDetails(jsonFile);
 
         if (connectionDetails == null) {
-            printer().println("Could not read connection details from: " + jsonFile);
+            printer().printErr("Could not read connection details from: " + jsonFile);
             return 1;
         }
 

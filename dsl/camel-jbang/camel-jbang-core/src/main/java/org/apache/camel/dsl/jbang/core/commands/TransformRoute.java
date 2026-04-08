@@ -23,6 +23,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Stack;
 
@@ -35,8 +36,23 @@ import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
 @Command(name = "route", description = "Transform Camel routes to XML or YAML format", sortOptions = false,
-         showDefaultValues = true)
+         showDefaultValues = true,
+         footer = {
+                 "%nExamples:",
+                 "  camel transform route hello.java --format=yaml",
+                 "  camel transform route hello.xml --format=yaml" })
 public class TransformRoute extends CamelCommand {
+
+    public static class FormatCompletionCandidates implements Iterable<String> {
+
+        public FormatCompletionCandidates() {
+        }
+
+        @Override
+        public Iterator<String> iterator() {
+            return List.of("xml", "yaml").iterator();
+        }
+    }
 
     @CommandLine.Parameters(description = "The Camel file(s) to run. If no files specified then application.properties is used as source for which files to run.",
                             arity = "0..9", paramLabel = "<files>", parameterConsumer = FilesConsumer.class)
@@ -50,7 +66,8 @@ public class TransformRoute extends CamelCommand {
     private String output;
 
     @CommandLine.Option(names = { "--format" },
-                        description = "Output format (xml or yaml), if only yaml files are provided, the format defaults to xml and vice versa")
+                        completionCandidates = FormatCompletionCandidates.class,
+                        description = "Output format (${COMPLETION-CANDIDATES}), if only yaml files are provided, the format defaults to xml and vice versa")
     String format;
 
     @CommandLine.Option(names = { "--resolve-placeholders" }, defaultValue = "false",
@@ -107,7 +124,7 @@ public class TransformRoute extends CamelCommand {
             }
         };
         run.files = files;
-        run.maxSeconds = 1;
+        run.executionLimitOptions.maxSeconds = 1;
         Integer exit = run.runTransform(ignoreLoadingError);
         if (exit != null && exit != 0) {
             return exit;

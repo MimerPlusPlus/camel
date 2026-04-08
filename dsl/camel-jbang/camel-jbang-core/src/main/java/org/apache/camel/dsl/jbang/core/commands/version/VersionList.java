@@ -65,7 +65,12 @@ import picocli.CommandLine;
 import static org.apache.camel.dsl.jbang.core.common.CamelCommandHelper.CAMEL_INSTANCE_TYPE;
 
 @CommandLine.Command(name = "list", description = "Displays available Camel versions",
-                     sortOptions = false, showDefaultValues = true)
+                     sortOptions = false, showDefaultValues = true,
+                     footer = {
+                             "%nExamples:",
+                             "  camel version list",
+                             "  camel version list --runtime=spring-boot",
+                             "  camel version list --lts" })
 public class VersionList extends CamelCommand {
 
     private static final String VERSION_LIST_CHECKER = ".camel-jbang-version-list.json";
@@ -391,7 +396,7 @@ public class VersionList extends CamelCommand {
 
             main.stop();
         } catch (Exception e) {
-            printer().println("Error downloading available Camel versions due to: " + e.getMessage());
+            printer().printErr("Error downloading available Camel versions due to: " + e.getMessage());
             return 1;
         }
 

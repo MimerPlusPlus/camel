@@ -2751,6 +2751,54 @@ public class StaticEndpointBuilders {
         return CaffeineLoadCacheEndpointBuilderFactory.endpointBuilder(componentName, path);
     }
     /**
+     * Camunda (camel-camunda)
+     * Interact with Camunda 8 Orchestration Clusters using the Camunda Java
+     * Client.
+     * 
+     * Category: workflow,saas
+     * Since: 4.19
+     * Maven coordinates: org.apache.camel:camel-camunda
+     * 
+     * Syntax: <code>camunda:operationName</code>
+     * 
+     * Path parameter: operationName (required)
+     * The operation to use
+     * There are 9 enums and the value can be one of: startProcess,
+     * cancelProcess, publishMessage, completeJob, failJob, updateJobRetries,
+     * worker, throwError, deployResource
+     * 
+     * @param path operationName
+     * @return the dsl builder
+     */
+    public static CamundaEndpointBuilderFactory.CamundaEndpointBuilder camunda(String path) {
+        return camunda("camunda", path);
+    }
+    /**
+     * Camunda (camel-camunda)
+     * Interact with Camunda 8 Orchestration Clusters using the Camunda Java
+     * Client.
+     * 
+     * Category: workflow,saas
+     * Since: 4.19
+     * Maven coordinates: org.apache.camel:camel-camunda
+     * 
+     * Syntax: <code>camunda:operationName</code>
+     * 
+     * Path parameter: operationName (required)
+     * The operation to use
+     * There are 9 enums and the value can be one of: startProcess,
+     * cancelProcess, publishMessage, completeJob, failJob, updateJobRetries,
+     * worker, throwError, deployResource
+     * 
+     * @param componentName to use a custom component name for the endpoint
+     * instead of the default name
+     * @param path operationName
+     * @return the dsl builder
+     */
+    public static CamundaEndpointBuilderFactory.CamundaEndpointBuilder camunda(String componentName, String path) {
+        return CamundaEndpointBuilderFactory.endpointBuilder(componentName, path);
+    }
+    /**
      * ChatScript (camel-chatscript)
      * Chat with a ChatScript Server.
      * 
@@ -3263,8 +3311,9 @@ public class StaticEndpointBuilders {
     }
     /**
      * Couchbase (camel-couchbase)
-     * Query Couchbase Views with a poll strategy and/or perform various
-     * operations against Couchbase databases.
+     * Query Couchbase databases using SQL (N1QL) queries or MapReduce Views
+     * with a poll strategy and/or perform various operations against Couchbase
+     * databases.
      * 
      * Category: database
      * Since: 2.19
@@ -3290,8 +3339,9 @@ public class StaticEndpointBuilders {
     }
     /**
      * Couchbase (camel-couchbase)
-     * Query Couchbase Views with a poll strategy and/or perform various
-     * operations against Couchbase databases.
+     * Query Couchbase databases using SQL (N1QL) queries or MapReduce Views
+     * with a poll strategy and/or perform various operations against Couchbase
+     * databases.
      * 
      * Category: database
      * Since: 2.19
@@ -4878,11 +4928,14 @@ public class StaticEndpointBuilders {
      * Comma-separated list of event types to subscribe to. Event types
      * correspond to CamelEvent.Type enum values (case-insensitive), for
      * example: RouteStarted, RouteStopped, ExchangeCompleted, ExchangeFailed.
+     * Wildcard patterns are supported using a suffix, for example: Route
+     * matches all route events, Exchange matches all exchange events, and
+     * matches all events.
      * 
      * @param path events
      * @return the dsl builder
      */
-    public static EventEndpointBuilderFactory.EventEndpointBuilder event(String path) {
+    public static CamelEventEndpointBuilderFactory.CamelEventEndpointBuilder event(String path) {
         return event("event", path);
     }
     /**
@@ -4900,14 +4953,17 @@ public class StaticEndpointBuilders {
      * Comma-separated list of event types to subscribe to. Event types
      * correspond to CamelEvent.Type enum values (case-insensitive), for
      * example: RouteStarted, RouteStopped, ExchangeCompleted, ExchangeFailed.
+     * Wildcard patterns are supported using a suffix, for example: Route
+     * matches all route events, Exchange matches all exchange events, and
+     * matches all events.
      * 
      * @param componentName to use a custom component name for the endpoint
      * instead of the default name
      * @param path events
      * @return the dsl builder
      */
-    public static EventEndpointBuilderFactory.EventEndpointBuilder event(String componentName, String path) {
-        return EventEndpointBuilderFactory.endpointBuilder(componentName, path);
+    public static CamelEventEndpointBuilderFactory.CamelEventEndpointBuilder event(String componentName, String path) {
+        return CamelEventEndpointBuilderFactory.endpointBuilder(componentName, path);
     }
     /**
      * Exec (camel-exec)
@@ -7849,6 +7905,48 @@ public class StaticEndpointBuilders {
      */
     public static WatsonxAiEndpointBuilderFactory.WatsonxAiEndpointBuilder ibmWatsonxAi(String componentName, String path) {
         return WatsonxAiEndpointBuilderFactory.endpointBuilder(componentName, path);
+    }
+    /**
+     * IBM watsonx.data (camel-ibm-watsonx-data)
+     * Interact with IBM watsonx.data lakehouse for catalog, schema, table, and
+     * engine management.
+     * 
+     * Category: cloud,database
+     * Since: 4.19
+     * Maven coordinates: org.apache.camel:camel-ibm-watsonx-data
+     * 
+     * Syntax: <code>ibm-watsonx-data:label</code>
+     * 
+     * Path parameter: label (required)
+     * Logical name for the endpoint
+     * 
+     * @param path label
+     * @return the dsl builder
+     */
+    public static WatsonxDataEndpointBuilderFactory.WatsonxDataEndpointBuilder ibmWatsonxData(String path) {
+        return ibmWatsonxData("ibm-watsonx-data", path);
+    }
+    /**
+     * IBM watsonx.data (camel-ibm-watsonx-data)
+     * Interact with IBM watsonx.data lakehouse for catalog, schema, table, and
+     * engine management.
+     * 
+     * Category: cloud,database
+     * Since: 4.19
+     * Maven coordinates: org.apache.camel:camel-ibm-watsonx-data
+     * 
+     * Syntax: <code>ibm-watsonx-data:label</code>
+     * 
+     * Path parameter: label (required)
+     * Logical name for the endpoint
+     * 
+     * @param componentName to use a custom component name for the endpoint
+     * instead of the default name
+     * @param path label
+     * @return the dsl builder
+     */
+    public static WatsonxDataEndpointBuilderFactory.WatsonxDataEndpointBuilder ibmWatsonxData(String componentName, String path) {
+        return WatsonxDataEndpointBuilderFactory.endpointBuilder(componentName, path);
     }
     /**
      * IEC 60870 Client (camel-iec60870)
@@ -13916,7 +14014,7 @@ public class StaticEndpointBuilders {
     }
     /**
      * REST OpenApi (camel-rest-openapi)
-     * To call REST services using OpenAPI specification as contract.
+     * To call and expose REST services using OpenAPI specification as contract.
      * 
      * Category: rest,api
      * Since: 3.1
@@ -13953,7 +14051,7 @@ public class StaticEndpointBuilders {
     }
     /**
      * REST OpenApi (camel-rest-openapi)
-     * To call REST services using OpenAPI specification as contract.
+     * To call and expose REST services using OpenAPI specification as contract.
      * 
      * Category: rest,api
      * Since: 3.1
@@ -15099,6 +15197,7 @@ public class StaticEndpointBuilders {
      * @param path name
      * @return the dsl builder
      */
+    @Deprecated
     public static SplunkEndpointBuilderFactory.SplunkEndpointBuilder splunk(String path) {
         return splunk("splunk", path);
     }
@@ -15120,6 +15219,7 @@ public class StaticEndpointBuilders {
      * @param path name
      * @return the dsl builder
      */
+    @Deprecated
     public static SplunkEndpointBuilderFactory.SplunkEndpointBuilder splunk(String componentName, String path) {
         return SplunkEndpointBuilderFactory.endpointBuilder(componentName, path);
     }
@@ -17757,6 +17857,7 @@ public class StaticEndpointBuilders {
      * @param path operationName
      * @return the dsl builder
      */
+    @Deprecated
     public static ZeebeEndpointBuilderFactory.ZeebeEndpointBuilder zeebe(String path) {
         return zeebe("zeebe", path);
     }
@@ -17782,6 +17883,7 @@ public class StaticEndpointBuilders {
      * @param path operationName
      * @return the dsl builder
      */
+    @Deprecated
     public static ZeebeEndpointBuilderFactory.ZeebeEndpointBuilder zeebe(String componentName, String path) {
         return ZeebeEndpointBuilderFactory.endpointBuilder(componentName, path);
     }

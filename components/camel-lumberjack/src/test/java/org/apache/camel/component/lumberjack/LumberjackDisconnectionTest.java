@@ -27,27 +27,28 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.mock.MockEndpoint;
 import org.apache.camel.test.AvailablePortFinder;
 import org.apache.camel.test.junit6.CamelTestSupport;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.DisabledOnOs;
+import org.junit.jupiter.api.condition.OS;
+import org.junit.jupiter.api.extension.RegisterExtension;
 import org.junit.jupiter.api.parallel.Isolated;
 
 import static org.apache.camel.test.junit6.TestSupport.assertCollectionSize;
 
+@DisabledOnOs(value = { OS.LINUX },
+              architectures = { "s390x" },
+              disabledReason = "This test does not run reliably on multiple platforms (see CAMEL-21438)")
 @Isolated
 public class LumberjackDisconnectionTest extends CamelTestSupport {
-    private static int port;
-
-    @BeforeAll
-    public static void beforeClass() {
-        port = AvailablePortFinder.getNextAvailable();
-    }
+    @RegisterExtension
+    AvailablePortFinder.Port port = AvailablePortFinder.find();
 
     @Override
     protected RouteBuilder createRouteBuilder() {
         return new RouteBuilder() {
             public void configure() {
                 // Lumberjack configured with something that throws an exception
-                from("lumberjack:0.0.0.0:" + port).process(new ErrorProcessor()).to("mock:output");
+                from("lumberjack:0.0.0.0:" + port.getPort()).process(new ErrorProcessor()).to("mock:output");
             }
         };
     }
@@ -63,7 +64,7 @@ public class LumberjackDisconnectionTest extends CamelTestSupport {
         List<Integer> windows = Arrays.asList(15, 10);
 
         // When sending messages
-        List<Integer> responses = LumberjackUtil.sendMessages(port, null, windows, false);
+        List<Integer> responses = LumberjackUtil.sendMessages(port.getPort(), null, windows, false);
 
         // Then we should have the messages we're expecting
         mock.assertIsSatisfied();

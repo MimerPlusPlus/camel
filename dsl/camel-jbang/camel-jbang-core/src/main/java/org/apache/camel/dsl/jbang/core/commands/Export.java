@@ -59,7 +59,14 @@ import static org.apache.camel.dsl.jbang.core.common.CamelJBangConstants.SPRING_
 
 @Command(name = "export",
          description = "Export to other runtimes (Camel Main, Spring Boot, or Quarkus)", sortOptions = false,
-         showDefaultValues = true)
+         showDefaultValues = true,
+         footer = {
+                 "%nExamples:",
+                 "  camel export hello.java",
+                 "  camel export --runtime=spring-boot hello.java",
+                 "  camel export --runtime=quarkus *",
+                 "  camel export --gav=com.example:myapp:1.0 hello.java",
+                 "  camel export --dry-run hello.java" })
 public class Export extends ExportBaseCommand {
 
     public Export(CamelJBangMain main) {
@@ -226,6 +233,7 @@ public class Export extends ExportBaseCommand {
         cmd.mavenApacheSnapshotEnabled = this.mavenApacheSnapshotEnabled;
         cmd.exportDir = this.exportDir;
         cmd.cleanExportDir = this.cleanExportDir;
+        cmd.yes = this.yes;
         cmd.fresh = this.fresh;
         cmd.download = this.download;
         cmd.skipPlugins = this.skipPlugins;
@@ -242,6 +250,7 @@ public class Export extends ExportBaseCommand {
         cmd.quarkusGroupId = this.quarkusGroupId;
         cmd.quarkusArtifactId = this.quarkusArtifactId;
         cmd.quarkusVersion = this.quarkusVersion;
+        cmd.quarkusPackageType = this.quarkusPackageType;
         cmd.springBootVersion = this.springBootVersion;
         cmd.mavenWrapper = this.mavenWrapper;
         cmd.quiet = this.quiet;
@@ -256,6 +265,7 @@ public class Export extends ExportBaseCommand {
         cmd.groovyPrecompiled = this.groovyPrecompiled;
         cmd.hawtio = this.hawtio;
         cmd.hawtioVersion = this.hawtioVersion;
+        cmd.dryRun = this.dryRun;
         // run export
         return cmd.export();
     }
