@@ -160,6 +160,21 @@ After:
             uri: mock:end
 ----
 
+=== camel-platform-http-main
+
+When `authenticationEnabled` is set to `true` and no explicit `authenticationPath` is configured,
+the default authentication path is now `/*`. This means all subpaths under the configured context path
+are protected by authentication.
+
+Previously, the authentication path defaulted to the value of `path` (e.g. `/api`), which only covered
+that exact path. If you relied on this behavior and need selective path protection, set
+`authenticationPath` explicitly:
+
+[source,properties]
+----
+camel.server.authenticationPath=/secure/*
+----
+
 === camel-csimple (Deprecation)
 
 The `csimple` (compiled simple) language has been deprecated. Use the `simple` language instead.
@@ -571,6 +586,12 @@ Five new configuration properties have been added to the SSH endpoint to expose 
 - `channelOpenTimeout` -- timeout for opening an SSH channel.
 
 All properties default to `0`, which means the Apache MINA SSHD defaults are used. This is an additive change with no impact on existing configurations.
+
+=== camel-json-validator
+
+The JSON validation library `com.networknt:json-schema-validator` used by `camel-json-validator` has been upgraded from 1.x to 2.x.
+
+The `json-schema-validator` https://github.com/networknt/json-schema-validator/blob/master/doc/migration-2.0.0.md[migration guide] can help to migrate your applications if you refer to types that have been updated or removed in 2.x.
 
 === MDC older logic (Deprecation)
 
